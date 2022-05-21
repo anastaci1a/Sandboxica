@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <!-- Socket.io script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.3.0/socket.io.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.7.2/addons/p5.dom.min.js"></script>
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/addons/p5.sound.min.js"></script> -->
+  <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="css/style.css">
+  <meta charset="utf-8" />
+
+  <title>Sandboxica</title>
+  <link rel="icon" href="/data/images/favicon.png">
+
+  <style>
+    #chatlogDiv {
+      overflow-y: scroll;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    #chatlogDiv::-webkit-scrollbar {
+      display: none;
+    }
+
+    #chatlogDiv>* {
+      display: block;
+      width: 100%;
+    }
+
+    #chatlogP {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    body {
+      -youbkit-touch-callout: none;
+      /* iOS Safari */
+      -youbkit-user-select: none;
+      /* Chrome 6.0+, Safari 3.1+, Edge & Opera 15+ */
+      -moz-user-select: none;
+      /* Firefox */
+      -ms-user-select: none;
+      /* IE 10+ and Edge */
+      user-select: none;
+      /* Non-prefixed version currently supported by Chrome and Opera */
+    }
+  </style>
+</head>
+
+<body>
+  <script src="js/canvas.js"></script>
+  <script src="js/chat.js"></script>
+  <script src="js/gameState.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
