@@ -1,9 +1,3 @@
+function setupGameState() {}
 
-
-function setupGameState() {
-  
-}
-
-function gameState() {
-
-}
+function gameState() {}
