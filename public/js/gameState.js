@@ -36,5 +36,10 @@ function gameState() {
     case 3: {
       break;
     }
+
+    //admin room
+    case 4: {
+      break;
+    }
   }
 }
