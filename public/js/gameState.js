@@ -29,16 +29,19 @@ function gameState() {
     case 2: {
       joinMessage();
       gs = 3;
+      
       break;
     }
 
     //game
     case 3: {
+
       break;
     }
 
     //admin room
     case 4: {
+
       break;
     }
   }
