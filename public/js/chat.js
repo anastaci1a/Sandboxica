@@ -108,6 +108,12 @@ function setupChat() {
   elementPos();
 }
 
+//lock or unlock username
+function lockUsername(lock) {
+  document.getElementById("messageName").disabled = lock;
+  document.getElementById("messageName").readOnly = lock;
+}
+
 //set positions of elements
 function elementPos() {
   messageName.position(padding, height - 3.5 * padding);

@@ -1,5 +1,7 @@
 //console log of all messages
 let consolelog = [];
+//usernames
+let usernames = [];
 
 // file system module to perform file operations
 'use strict';
@@ -24,6 +26,12 @@ let io = socket(server);
 //server connected message
 addToConsole(true, 'Server connected.');
 
+
+//create world
+// let blocks = []
+// for (let i = 0; i )
+
+
 //connections with clients
 io.sockets.on('connection', newConnection);
 function newConnection(socket) {
@@ -40,6 +48,27 @@ function newConnection(socket) {
   socket.on('joinMessage', joinMessage);
   function joinMessage(data) {
     sendServerMessage(data.user + " has joined the game.");
+  }
+
+  //test if username is taken or available
+  let username = null;
+  socket.on('usernameTest', usernameTest);
+  function usernameTest(data) {
+    let u = data.username.toLowerCase();
+
+    let taken = false;
+    for (let i = 0; i < usernames.length; i++) {
+      if (u == usernames[i]) { taken = true; }
+    }
+
+    let r = { available: false }
+    if (!taken) {
+      username = u;
+      r.available = true;
+      usernames.splice(0, 0, u);
+    }
+
+    socket.emit('usernameAvailable', r);
   }
 }
 
@@ -94,6 +123,7 @@ function getTime(mode) {
 }
 
 //console
+function addToConsole(msg) { addToConsole(true, msg); }
 function addToConsole(time, msg) {
   let print; //string var that's going to be saved to consolelog var
   if (time) print = '<' + getTime('fulltime') + '> ' + msg;

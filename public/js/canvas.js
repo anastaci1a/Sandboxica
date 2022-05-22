@@ -3,7 +3,7 @@ let canvas;
 let padding = 20;
 
 function setupCanvas() {
-  createCanvas(window.innerWidth - padding, window.innerHeight - padding - 50);
+  createCanvas(window.innerWidth - padding, window.innerHeight - padding);
   canvasSize();
 }
 function canvasSize() {
