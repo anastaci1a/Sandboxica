@@ -1,10 +1,14 @@
 let socket;
+let backgroundColor;
 
 //***
 function setup() {
   //canvas & colors
   setupCanvas();
   colorMode(HSB);
+  //draw setup
+  rectMode(CENTER);
+  ellipseMode(CENTER);
 
   //connect to server
   socket = io();
@@ -37,9 +41,9 @@ function setup() {
 //***
 function draw() {
   //background
-  let col = (frameCount / 2) % 360;
-  background(col, 20, 100); //set canvas color
-  document.body.style.backgroundColor = color(col, 20, 90); //set background color behind canvas
+  if (backgroundColor == null) backgroundColor = (frameCount / 2) % 360;
+  background(backgroundColor, 20, 100); //set canvas color
+  document.body.style.backgroundColor = color(backgroundColor, 20, 90); //set background color behind canvas
 
   //game
   gameState();
