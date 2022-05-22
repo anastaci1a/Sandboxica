@@ -7,17 +7,9 @@ let chatlogDiv, chatlogP = [];
 
 //run after everything initialized
 function setupChat() {
-  //load username from localStorage
-  let username = localStorage.getItem('username');
-  if (username != null) messageName.value(username);
-  else pickUsername('Pick a username! :)');
-  function pickUsername(p) {
-    username = prompt(p);
-    localStorage.setItem('username', username);
-  }
 
   //username textbox
-  messageName = createInput(username); //('user' + int(random(100, 999)));
+  messageName = createInput(''); //('user' + int(random(100, 999)));
   messageName.style('width: 100px; text-align: center; name: "messageName";');
   messageName.id('messageName');
   //chat textbox
@@ -34,9 +26,27 @@ function setupChat() {
     }
   });
 
+  //load username from localStorage
+  let username = localStorage.getItem('username');
+  if (!usernameAvailable(username)) pickUsername('Enter a username!');
+  function pickUsername(p) {
+    username = prompt(p);
+    if (!usernameAvailable(username)) pickUsername('invalid username.');
+  }
+  messageName.value(username);
+
+  //check if username is available
+  function usernameAvailable(u) {
+    return u != null && u != '' && u != 'server' && u != 'admin';
+  }
+
   //save username to localStorage
   messageName.elt.addEventListener('input', function() {
-    localStorage.setItem('username', messageName.value());
+    let u = messageName.value();
+    if (usernameAvailable(u)) localStorage.setItem('username', messageName.value());
+    else {
+      alert('invalid username');
+      messageName.value(''); }
   });
 
   //chatlog div
