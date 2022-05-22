@@ -33,27 +33,23 @@ addToConsole(true, 'Server connected.');
 
 
 //connections with clients
-io.sockets.on('connection', newConnection);
-function newConnection(socket) {
+io.sockets.on('connection', function(socket) {
   let superuser = false;
   addToConsole(true, 'New Connection: ' + socket.id);
 
   //when the socket receives a message with the name 'message' run function chatMessage
-  socket.on('message', chatMessage);
-  function chatMessage(data) {
+  socket.on('message', function(data) {
     sendMessage(data);
-  }
+  });
 
   //when the socket receives a message with the name 'joinMessage' run function joinMessage
-  socket.on('joinMessage', joinMessage);
-  function joinMessage(data) {
+  socket.on('joinMessage', function(data) {
     sendServerMessage(data.user + " has joined the game.");
-  }
+  });
 
   //test if username is taken or available
   let username = null;
-  socket.on('usernameTest', usernameTest);
-  function usernameTest(data) {
+  socket.on('usernameTest', function(data) {
     let u = data.username.toLowerCase();
 
     let taken = false;
@@ -69,8 +65,15 @@ function newConnection(socket) {
     }
 
     socket.emit('usernameAvailable', r);
-  }
-}
+  });
+
+   socket.on('disconnect', function() {
+      addToConsole(true, 'Disconnected: ' + socket.id);
+
+      let i = usernames.indexOf(username);
+      usernames.splice(i, 1);
+   });
+});
 
 //emitting to clients
 function sendServerMessage(msg) {
@@ -123,7 +126,6 @@ function getTime(mode) {
 }
 
 //console
-function addToConsole(msg) { addToConsole(true, msg); }
 function addToConsole(time, msg) {
   let print; //string var that's going to be saved to consolelog var
   if (time) print = '<' + getTime('fulltime') + '> ' + msg;

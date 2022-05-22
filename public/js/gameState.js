@@ -30,9 +30,9 @@ function gameState() {
       break;
     }
 
-    //loading
+    //loading username
     case 2: {
-      textSize(height/10);
+      textSize(height/20);
       text("Loading...", width/2, height/2);
 
       if (username != null) {
@@ -46,26 +46,37 @@ function gameState() {
         }
       }
 
+
+
+      break;
+    }
+
+    case 3: {
+      textSize(height/20);
+      text("Downloading Chunks...", width/2, height/2);
+
+      gs++;
+
       break;
     }
 
     //join message
-    case 3: {
+    case 4: {
       joinMessage();
       lockUsername(true);
 
-      gs = 4;
+      gs++;
 
       break;
     }
 
     //game
-    case 4: {
+    case 5: {
       break;
     }
 
     //admin room
-    case 4: {
+    case 6: {
       break;
     }
   }
