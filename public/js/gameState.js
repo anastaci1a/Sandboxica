@@ -8,14 +8,12 @@ function gameState() {
   switch(gs) {
     //home menu
     case 0: {
-      let bt = new Button("click me", width/2, height/2, width/50, height/100);
-      bt.display();
-
+      let bt = new Button("click meeeeeee", width/2, height/2, height/10);
+      bt.manage();
+      if (bt.released) gs = 1;
       break;
     }
     //
-    case 1: {
-
-    }
+    case 1: {}
   }
 }

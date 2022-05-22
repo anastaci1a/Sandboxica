@@ -9,6 +9,7 @@ function setup() {
   //draw setup
   rectMode(CENTER);
   ellipseMode(CENTER);
+  textAlign(CENTER, CENTER);
 
   //connect to server
   socket = io();
@@ -35,6 +36,7 @@ function setup() {
   joinMessage();
 
   //setups
+  setupMouse();
   setupGameState();
 }
 
@@ -47,4 +49,7 @@ function draw() {
 
   //game
   gameState();
+
+  //input
+  mouse.update();
 }
