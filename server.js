@@ -10,7 +10,7 @@ const fs = require('fs');
 //import module being used (express is something that I have access to in node program)
 let express = require('express');
 let app = express();
-let server = app.listen(process.env.port);
+let server = app.listen(process.env.PORT || 3000);
 app.use(express.static('public')); //redirect users connecting to ip to public folder
 
 //favicon
