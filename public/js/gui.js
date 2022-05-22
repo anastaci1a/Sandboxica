@@ -1,6 +1,7 @@
 class Button {
-  constructor(text, x, y, h) {
+  constructor(text, col, x, y, h) {
     this.text = text;
+    this.col = col;
     this.pos = createVector(x, y);
 
     this.h = h;
@@ -28,15 +29,15 @@ class Button {
 
   display() {
     if (this.hover && !this.pressed) {
-      fill(0, 0, 80);
+      fill(this.col, 50, 100);
       stroke(0);
-      strokeWeight(this.h/20);
+      strokeWeight(this.h/30);
     } else if (this.pressed) {
-      fill(0, 0, 70);
+      fill(this.col, 50, 100);
       stroke(0);
       strokeWeight(this.h/20);
     } else {
-      fill(0, 0, 80);
+      fill(this.col, 30, 100);
       stroke(0);
       strokeWeight(this.h/30);
     }
