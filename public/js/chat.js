@@ -7,8 +7,17 @@ let chatlogDiv, chatlogP = [];
 
 //run after everything initialized
 function setupChat() {
+  //load username from localStorage
+  let username = localStorage.getItem('username');
+  if (username != null) messageName.value(username);
+  else pickUsername('Pick a username! :)');
+  function pickUsername(p) {
+    username = prompt(p);
+    localStorage.setItem('username', username);
+  }
+
   //username textbox
-  messageName = createInput('user' + int(random(100, 999)));
+  messageName = createInput(username); //('user' + int(random(100, 999)));
   messageName.style('width: 100px; text-align: center; name: "messageName";');
   messageName.id('messageName');
   //chat textbox
@@ -25,18 +34,15 @@ function setupChat() {
     }
   });
 
-  //chatlog div
-  chatlogDiv = createElement('div', '');
-  chatlogDiv.id('chatlogDiv');
-  // chatlogDiv.style('background-color:green; display: flex; justify-content: left; align-items: flex-end;');
-
-  //load username from localStorage
-  let username = localStorage.getItem('username');
-  if (username != null) messageName.value(username);
   //save username to localStorage
   messageName.elt.addEventListener('input', function() {
     localStorage.setItem('username', messageName.value());
   });
+
+  //chatlog div
+  chatlogDiv = createElement('div', '');
+  chatlogDiv.id('chatlogDiv');
+  // chatlogDiv.style('background-color:green; display: flex; justify-content: left; align-items: flex-end;');
 
   //send message (button click)
   messageSend.mousePressed(msgSend);
