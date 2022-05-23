@@ -27,9 +27,7 @@ let io = socket(server);
 addToConsole(true, 'Server connected.');
 
 
-//create world
-// let blocks = []
-// for (let i = 0; i )
+//load
 
 
 //connections with clients

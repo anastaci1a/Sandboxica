@@ -51,6 +51,7 @@ function gameState() {
       break;
     }
 
+    //load chunks
     case 3: {
       textSize(height/20);
       text("Downloading Chunks...", width/2, height/2);
@@ -72,6 +73,8 @@ function gameState() {
 
     //game
     case 5: {
+
+
       break;
     }
 

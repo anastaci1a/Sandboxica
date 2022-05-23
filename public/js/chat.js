@@ -43,7 +43,7 @@ function setupChat() {
   //save username to localStorage
   messageName.elt.addEventListener('input', function() {
     let u = messageName.value();
-    if (usernameAvailable(u)) localStorage.setItem('username', messageName.value());
+    if (usernameAvailable(u) && gs == 0) localStorage.setItem('username', messageName.value());
     else {
       alert('invalid username');
       messageName.value(''); }
