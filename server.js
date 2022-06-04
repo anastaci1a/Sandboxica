@@ -26,8 +26,8 @@ let io = socket(server);
 //server connected message
 addToConsole(true, 'Server connected.');
 
-
 //load
+setupGame();
 
 
 //connections with clients
@@ -55,7 +55,7 @@ io.sockets.on('connection', function(socket) {
       if (u == usernames[i]) { taken = true; }
     }
 
-    let r = { available: false }
+    let r = { available: false, test: usernames };
     if (!taken) {
       username = u;
       r.available = true;
@@ -169,4 +169,44 @@ function msgStyle(data) {
 
   //old data
   return data;
+}
+
+
+
+//setup game
+function setupGame() {
+  //see if save file exists
+  let saveFileExists = checkFileExists('save.json');
+  let f = {};
+  //load save file
+  if (saveFileExists) {
+    addToConsole(true, 'Loading save file...');
+    const fs = require('fs');
+    try {
+      const jsonData = JSON.parse(fs.readFileSync('save.json', 'utf-8'));
+    } catch(err) {
+      saveFileExists = false;
+      addToConsole(true, 'Error loading save file at: ' + err);
+    }
+    if (saveFileExists) {
+      f = jsonData;
+    }
+  }
+  //autosaves & new save files
+  if (!saveFileExists) {
+    addToConsole(true, 'Checking autosaves...');
+    //check and load newest autosave
+    //else create new save file
+    addToConsole(true, 'Creatiing new save file...');
+  }
+}
+
+function checkFileExists(filepath){
+  let flag = true;
+  try {
+    fs.accessSync(filepath, fs.constants.F_OK);
+  } catch(e) {
+    flag = false;
+  }
+  return flag;
 }
