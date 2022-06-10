@@ -33,7 +33,6 @@ function overlook() {
     scale(overlookedZoom);
     translate(-size.x/2, -size.y/2);
     overlookedZoom = pow(overlookedZoom, 1.1);
-    print(overlookedZoom);
   }
 
   for (x = 0; x < game.length; x++) {
