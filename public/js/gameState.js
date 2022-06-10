@@ -42,6 +42,7 @@ function gameState() {
           break;
         } else {
           gs = 3;
+          requestGame();
           break;
         }
       }
@@ -55,7 +56,6 @@ function gameState() {
     case 3: {
       textSize(height/20);
       text("Downloading Chunks...", width/2, height/2);
-      requestGame();
 
       break;
     }
