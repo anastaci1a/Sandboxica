@@ -47,5 +47,5 @@ function requestGame() {
 }
 socket.on('sendGame', function(data) {
   game = data;
-  gs++;
+  gs = 4;
 });
