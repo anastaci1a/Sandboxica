@@ -1,5 +1,7 @@
 //console log of all messages
 let consolelog = [];
+//game
+let game = [];
 //usernames
 let usernames = [];
 
@@ -17,14 +19,14 @@ app.use(express.static('public')); //redirect users connecting to ip to public f
 app.use('/favicon.ico', express.static('public/data/images/favicon.ico'));
 
 //server started message
-addToConsole(true, 'Server started...');
+addToConsole('Server started...');
 
 //socket.io
 let socket = require('socket.io');
 let io = socket(server);
 
 //server connected message
-addToConsole(true, 'Server connected.');
+addToConsole('Server connected.');
 
 //load
 setupGame();
@@ -32,8 +34,7 @@ setupGame();
 
 //connections with clients
 io.sockets.on('connection', function(socket) {
-  let superuser = false;
-  addToConsole(true, 'New Connection: ' + socket.id);
+  addToConsole('New Connection: ' + socket.id);
 
   //when the socket receives a message with the name 'message' run function chatMessage
   socket.on('message', function(data) {
@@ -65,8 +66,13 @@ io.sockets.on('connection', function(socket) {
     socket.emit('usernameAvailable', r);
   });
 
+  socket.on('requestGame', function() {
+    socket.emit('sendGame', game);
+    addToConsole('Sent game to ' + username + ' ' + socket.id);
+  });
+
    socket.on('disconnect', function() {
-      addToConsole(true, 'Disconnected: ' + socket.id);
+      addToConsole('Disconnected: ' + username + ' ' + socket.id);
 
       let i = usernames.indexOf(username);
       usernames.splice(i, 1);
@@ -81,21 +87,21 @@ function sendServerMessage(msg) {
   };
   data = msgStyle(data);
   io.sockets.emit('message', data); //all clients
-  addToConsole(true, '[' + data.user + '] ' + data.msg);
+  addToConsole('[' + data.user + '] ' + data.msg);
 }
 function sendMessage(data) {
   data = msgStyle(data);
   io.sockets.emit('message', data); //all clients
-  addToConsole(true, '[' + data.user + '] ' + data.msg);
+  addToConsole('[' + data.user + '] ' + data.msg);
 }
 function directMessage(socketId, data) {
   data = msgStyle(data);
   io.to(socketId).emit('message', data);
-  addToConsole(true, '[' + data.user + '] ' + data.msg + ' >> [' + socketId + ']');
+  addToConsole('[' + data.user + '] ' + data.msg + ' >> [' + socketId + ']');
 }
 function directAlert(socketId, data) {
   io.to(socketId).emit('directAlert', data);
-  addToConsole(true, 'Alerted [' + socketId + '] "' + data.msg + '"');
+  addToConsole('Alerted [' + socketId + '] "' + data.msg + '"');
 }
 function reloadClients() {
   io.sockets.emit('reload');
@@ -124,10 +130,9 @@ function getTime(mode) {
 }
 
 //console
-function addToConsole(time, msg) {
-  let print; //string var that's going to be saved to consolelog var
-  if (time) print = '<' + getTime('fulltime') + '> ' + msg;
-  else print = msg;
+function addToConsole(msg) {
+  let time = true;
+  let print = '<' + getTime('fulltime') + '> ' + msg;
 
   //print & save
   console.log(print);
@@ -180,13 +185,13 @@ function setupGame() {
   let f = {};
   //load save file
   if (saveFileExists) {
-    addToConsole(true, 'Loading save file...');
+    addToConsole('Loading save file...');
     const fs = require('fs');
     try {
       const jsonData = JSON.parse(fs.readFileSync('save.json', 'utf-8'));
     } catch(err) {
       saveFileExists = false;
-      addToConsole(true, 'Error loading save file at: ' + err);
+      addToConsole('Error loading save file at: ' + err);
     }
     if (saveFileExists) {
       f = jsonData;
@@ -194,11 +199,30 @@ function setupGame() {
   }
   //autosaves & new save files
   if (!saveFileExists) {
-    addToConsole(true, 'Checking autosaves...');
+    addToConsole('Checking autosaves...');
     //check and load newest autosave
     //else create new save file
-    addToConsole(true, 'Creatiing new save file...');
+    addToConsole('Creating new save file...');
+
+    game = createGame(100);
+
+    addToConsole('Done!');
   }
+}
+
+
+function createGame(s) {
+  let r = [];
+  for (x = 0; x < s; x++) {
+    r[x] = [];
+    for (y = 0; y < s; y++) {
+      r[x][y] = {
+        block: parseInt(5*Math.random()),
+        color: parseInt(360*Math.random())
+      };
+    }
+  }
+  return r;
 }
 
 function checkFileExists(filepath){

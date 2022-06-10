@@ -1,10 +1,8 @@
-let backgroundColor;
-
 //***
 function setup() {
   //canvas & colors
-  setupCanvas();
   colorMode(HSB);
+  setupCanvas();
   //draw setup
   rectMode(CENTER);
   ellipseMode(CENTER);
@@ -12,6 +10,7 @@ function setup() {
 
   //chat message box
   setupChat();
+  lockMessage(true);
 
   //setups
   setupMouse();
@@ -21,9 +20,8 @@ function setup() {
 //***
 function draw() {
   //background
-  if (backgroundColor == null) backgroundColor = (frameCount / 2) % 360;
-  background(backgroundColor, 20, 100); //set canvas color
-  document.body.style.backgroundColor = color(backgroundColor, 20, 90); //set background color behind canvas
+  drawBackground();
+  backgroundColor = color((frameCount / 2) % 360, 20, 100);
 
   //game
   gameState();

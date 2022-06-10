@@ -55,8 +55,7 @@ function gameState() {
     case 3: {
       textSize(height/20);
       text("Downloading Chunks...", width/2, height/2);
-
-      gs++;
+      requestGame();
 
       break;
     }
@@ -65,22 +64,36 @@ function gameState() {
     case 4: {
       joinMessage();
       lockUsername(true);
+      lockMessage(false);
 
       gs++;
 
       break;
     }
 
-    //game
+    //the overlook
     case 5: {
-
+      overlook();
 
       break;
     }
 
-    //admin room
+    //welcome screen
     case 6: {
+      welcomeScreen();
+
       break;
     }
+
+    case 7: {
+      runGame();
+
+      break;
+    }
+
+    // //admin room
+    // case 6: {
+    //   break;
+    // }
   }
 }

@@ -39,3 +39,13 @@ function usernameIsAvailable(data) {
   else username = '_UNAVAILABLE_';
   requested = false;
 }
+
+//request game
+let game;
+function requestGame() {
+  socket.emit('requestGame');
+}
+socket.on('sendGame', function(data) {
+  game = data;
+  gs++;
+});

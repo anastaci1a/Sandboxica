@@ -113,6 +113,12 @@ function lockUsername(lock) {
   document.getElementById("messageName").disabled = lock;
   document.getElementById("messageName").readOnly = lock;
 }
+function lockMessage(lock) {
+  document.getElementById("messageInput").disabled = lock;
+  document.getElementById("messageInput").readOnly = lock;
+  document.getElementById("messageSend").disabled = lock;
+  document.getElementById("messageSend").readOnly = lock;
+}
 
 //set positions of elements
 function elementPos() {
