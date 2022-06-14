@@ -46,9 +46,6 @@ function gameState() {
           break;
         }
       }
-
-
-
       break;
     }
 
@@ -85,11 +82,24 @@ function gameState() {
       break;
     }
 
+    //game
     case 7: {
       runGame();
 
       break;
     }
+
+    //map
+    case 8: {
+      let bt = new Button("Back to game", (frameCount / 1.5) % 360, width/2, height/11, height/12);
+
+      drawMap();
+      bt.manage();
+
+      if (bt.released) { gs = 7; }
+    }
+
+
 
     // //admin room
     // case 6: {

@@ -48,10 +48,13 @@ function overlook() {
 
   pop();
 
-  if (mouse.tap && !overlooked) {
+  if (mouse.tap && !overlooked && inBounds(mx, my, 0, 0, bSize*game.length, bSize*game[0].length)) {
     overlooked = true;
     overlookedPos = createVector(mouseX, mouseY);
-    overlookedZoom = 1.01;
+    overlookedZoom = 1.005;
+
+    player = new Player(int(mx/bSize), int(my/bSize));
+    camera = new Camera(player.pos);
   }
 
   if (overlookedZoom > 40) {
@@ -66,7 +69,7 @@ function overlook() {
 
 
 
-let welcomeReset = 60;
+let welcomeReset = 90;
 let welcomeCountdown = welcomeReset;
 function welcomeScreen() {
   backgroundColor = color(0, 0, 0);
@@ -78,14 +81,65 @@ function welcomeScreen() {
   welcomeCountdown--;
 
   if (welcomeCountdown < 0) {
-    welcomeCountdown = welcomeReset;
+    // welcomeCountdown = welcomeReset;
     gs++;
   }
 }
 
 
 
-
 function runGame() {
+  push();
 
+  translate(width/2, height/2);
+  bSize = height/20;
+  scale(bSize);
+
+  camera.update(player.pos);
+  camera.move();
+
+  for (x = 0; x < game.length; x++) {
+    for (y = 0; y < game[0].length; y++) {
+      let b = game[x][y];
+      if (dist(x, y, camera.pos.x, camera.pos.y) < width/bSize/2) {
+        noStroke();
+        fill(b.color, 50, 90);
+        rect(x, y, 1, 1);
+      }
+    }
+  }
+
+  push();
+  player.manage();
+  pop();
+
+  for (let i = 0; i < players.length; i++) {
+    push();
+    translate(players[i].x, players[i].y);
+    player.drawPlayer();
+    pop();
+  }
+
+  pop();
+}
+
+
+function drawMap() {
+  push();
+
+  translate(width/2, height/2);
+  bSize = min(width, height)/(game.length*1.5);
+  scale(bSize);
+  translate(-game.length/2, -game[0].length/2);
+
+  for (x = 0; x < game.length; x++) {
+    for (y = 0; y < game[0].length; y++) {
+      let b = game[x][y];
+      noStroke();
+      fill(b.color, 100, 100);
+      rect(x, y, 1, 1);
+    }
+  }
+
+  pop();
 }

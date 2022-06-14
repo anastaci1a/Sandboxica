@@ -13,7 +13,7 @@ function setup() {
   lockMessage(true);
 
   //setups
-  setupMouse();
+  setupInput();
   setupGameState();
 }
 

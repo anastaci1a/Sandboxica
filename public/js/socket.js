@@ -49,3 +49,20 @@ socket.on('sendGame', function(data) {
   game = data;
   gs = 4;
 });
+
+//update players
+let players = [];
+socket.on('updatePlayers', function(data) {
+  // remove current player from array
+  for (let i = 0; i < data.length; i++) {
+    if (username != null) {
+      if (data[i].username == username.toLowerCase()) {
+        data.splice(i, 1);
+        break;
+      }
+    }
+  }
+  //update local array
+  players = data;
+  print(players);
+});

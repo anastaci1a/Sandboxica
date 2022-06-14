@@ -2,7 +2,8 @@
 let consolelog = [];
 //game
 let game = [];
-//usernames
+//players
+let players = [];
 let usernames = [];
 
 // file system module to perform file operations
@@ -44,6 +45,15 @@ io.sockets.on('connection', function(socket) {
   //when the socket receives a message with the name 'joinMessage' run function joinMessage
   socket.on('joinMessage', function(data) {
     sendServerMessage(data.user + " has joined the game.");
+
+    if (getPlayerIndex(socket.id) == null) {
+      players.push({
+        id: socket.id,
+        username: data.user,
+        x: 0,
+        y: 0
+      });
+    }
   });
 
   //test if username is taken or available
@@ -66,17 +76,28 @@ io.sockets.on('connection', function(socket) {
     socket.emit('usernameAvailable', r);
   });
 
-  socket.on('requestGame', function() {
-    socket.emit('sendGame', game);
-    addToConsole('Sent game to ' + username + ' ' + socket.id);
+  socket.on('disconnect', function() {
+    addToConsole('Disconnected: ' + username + ' ' + socket.id);
+
+    usernames.splice(usernames.indexOf(username), 1);
+    players.splice(getPlayerIndex(socket.id), 1);
   });
 
-   socket.on('disconnect', function() {
-      addToConsole('Disconnected: ' + username + ' ' + socket.id);
+  socket.on('requestGame', function() {
+   socket.emit('sendGame', game);
+   addToConsole('Sent game to ' + username + ' ' + socket.id);
+  });
 
-      let i = usernames.indexOf(username);
-      usernames.splice(i, 1);
-   });
+  //players stuff
+  socket.on('sendPos', function(pos) {
+   let i = getPlayerIndex(socket.id);
+   if (i != null) {
+     players[i].x = pos.x;
+     players[i].y = pos.y;
+   }
+
+   updatePlayers();
+  });
 });
 
 //emitting to clients
@@ -105,6 +126,24 @@ function directAlert(socketId, data) {
 }
 function reloadClients() {
   io.sockets.emit('reload');
+}
+function updatePlayers() {
+  io.sockets.emit('updatePlayers', players);
+}
+function getPlayer(id) {
+  for (i = 0; i < players.length; i++) {
+    if (players[i].id = id) {
+      return players[i];
+    }
+  }
+}
+function getPlayerIndex(id) {
+  for (i = 0; i < players.length; i++) {
+    if (players[i].id == id) {
+      return i;
+    }
+  }
+  return null;
 }
 
 function getTime(mode) {
