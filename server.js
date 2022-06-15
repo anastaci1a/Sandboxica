@@ -3,8 +3,69 @@ let consolelog = [];
 //game
 let game = [];
 //players
-let players = [];
+let players = [{
+  id: 0,
+  username: 0,
+  x: 0,
+  y: 0
+}];
 let usernames = [];
+
+//blocks
+let blockIndex = [
+  //0
+  {
+    name: 'Stone',
+    properties: '',
+    col: {
+      hue: 0,
+      sat: 0,
+      bri: 29,
+      hran: 0,
+      sran: 0,
+      bran: 10
+    }
+  },
+  //1
+  {
+    name: 'Dirt',
+    properties: '',
+    col: {
+      hue: 22,
+      sat: 54,
+      bri: 42,
+      hran: 10,
+      sran: 0,
+      bran: 10
+    }
+  },
+  //2
+  {
+    name: 'Water',
+    properties: '',
+    col: {
+      hue: 204,
+      sat: 49,
+      bri: 84,
+      hran: 10,
+      sran: 0,
+      bran: 5
+    }
+  },
+  //3
+  {
+    name: 'Fire',
+    properties: '',
+    col: {
+      hue: 13,
+      sat: 69,
+      bri: 100,
+      hran: 20,
+      sran: 0,
+      bran: 10
+    }
+  }
+];
 
 // file system module to perform file operations
 'use strict';
@@ -81,6 +142,8 @@ io.sockets.on('connection', function(socket) {
 
     usernames.splice(usernames.indexOf(username), 1);
     players.splice(getPlayerIndex(socket.id), 1);
+
+    updatePlayers();
   });
 
   socket.on('requestGame', function() {
@@ -255,14 +318,32 @@ function createGame(s) {
   for (x = 0; x < s; x++) {
     r[x] = [];
     for (y = 0; y < s; y++) {
-      r[x][y] = {
-        block: parseInt(5*Math.random()),
-        color: parseInt(360*Math.random())
-      };
+      let block = parseInt(4*Math.random());
+      r[x][y] = loadBlockIndex(block);
     }
   }
   return r;
 }
+
+function loadBlockIndex(block) {
+  let b = blockIndex[block];
+  let r = {
+    name: b.name,
+    properties: b.properties,
+    col: {
+      hue: b.col.hue + b.col.hran*Math.random() - b.col.hran/2,
+      sat: b.col.sat + b.col.sran*Math.random() - b.col.sran/2,
+      bri: b.col.bri + b.col.bran*Math.random() - b.col.bran/2
+    }
+  }
+  return r;
+}
+
+
+
+
+
+
 
 function checkFileExists(filepath){
   let flag = true;

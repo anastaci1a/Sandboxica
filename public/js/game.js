@@ -39,9 +39,9 @@ function overlook() {
     for (y = 0; y < game[0].length; y++) {
       let b = game[x][y];
       noStroke();
-      fill(b.color, 50, 90);
-      if (dist(x*bSize, y*bSize, mx, my) < 8*bSize) fill(b.color, 100, 100);
-      else if (dist(x*bSize, y*bSize, mx, my) < 10*bSize) fill(b.color, 50, 50);
+      fill(b.col.hue, b.col.sat, b.col.bri);
+      if (dist(x*bSize, y*bSize, mx, my) < 8*bSize) fill(b.col.hue, b.col.sat, b.col.bri);
+      else if (dist(x*bSize, y*bSize, mx, my) < 10*bSize) fill(b.col.hue, b.col.sat/4, b.col.bri/4);
       rect(x*bSize, y*bSize, bSize, bSize);
     }
   }
@@ -106,7 +106,7 @@ function runGame() {
       let b = game[x][y];
       if (dist(x, y, camera.pos.x, camera.pos.y) < rSize) {
         noStroke();
-        fill(b.color, 50, 90);
+        fill(b.col.hue, b.col.sat, b.col.bri);
         rect(x, y, 1, 1);
       }
     }
@@ -141,7 +141,7 @@ function drawMap() {
     for (y = 0; y < game[0].length; y++) {
       let b = game[x][y];
       noStroke();
-      fill(b.color, 100, 100);
+      fill(b.col.hue, b.col.sat, b.col.bri);
       rect(x, y, 1, 1);
     }
   }
