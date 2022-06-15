@@ -32,7 +32,7 @@ function overlook() {
     translate(width/2, height/2);
     scale(overlookedZoom);
     translate(-size.x/2, -size.y/2);
-    overlookedZoom = pow(overlookedZoom, 1.1);
+    overlookedZoom = pow(overlookedZoom, 1.2);
   }
 
   for (x = 0; x < game.length; x++) {
@@ -117,8 +117,6 @@ function runGame() {
   for (let i = 0; i < players.length; i++) {
     let p = players[i];
 
-    // print(player.pos.x, player.pos.y);
-    // print(p.x, p.y);
     if (p.username != username && dist(camera.pos.x, camera.pos.y, p.x, p.y) < rSize) {
       push();
       translate(p.x, p.y);

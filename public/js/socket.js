@@ -47,7 +47,7 @@ function requestGame() {
 }
 socket.on('sendGame', function(data) {
   game = data;
-  gs = 4;
+  gs++;
 });
 
 //update players

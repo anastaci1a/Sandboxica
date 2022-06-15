@@ -49,7 +49,7 @@ let camera;
 class Camera {
   constructor(pos) {
     this.tpos = pos;
-    this.pos = createVector(0, 0);
+    this.pos = createVector(game.length/2, game[0].length/2);
   }
 
   update(tpos) {
