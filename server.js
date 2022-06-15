@@ -1,3 +1,16 @@
+// file system module to perform file operations
+'use strict';
+const fs = require('fs');
+//import module being used (express is something that I have access to in node program)
+let express = require('express');
+let app = express();
+let server = app.listen(process.env.PORT || 3000);
+app.use(express.static('public')); //redirect users connecting to ip to public folder
+//favicon
+app.use('/favicon.ico', express.static('public/data/images/favicon.ico'));
+
+
+
 //console log of all messages
 let consolelog = [];
 //game
@@ -10,75 +23,9 @@ let players = [{
   y: 0
 }];
 let usernames = [];
-
-//blocks
-let blockIndex = [
-  //0
-  {
-    name: 'Stone',
-    properties: '',
-    col: {
-      hue: 0,
-      sat: 0,
-      bri: 29,
-      hran: 0,
-      sran: 0,
-      bran: 10
-    }
-  },
-  //1
-  {
-    name: 'Dirt',
-    properties: '',
-    col: {
-      hue: 22,
-      sat: 54,
-      bri: 42,
-      hran: 10,
-      sran: 0,
-      bran: 10
-    }
-  },
-  //2
-  {
-    name: 'Water',
-    properties: '',
-    col: {
-      hue: 204,
-      sat: 49,
-      bri: 84,
-      hran: 10,
-      sran: 0,
-      bran: 5
-    }
-  },
-  //3
-  {
-    name: 'Fire',
-    properties: '',
-    col: {
-      hue: 13,
-      sat: 69,
-      bri: 100,
-      hran: 20,
-      sran: 0,
-      bran: 10
-    }
-  }
-];
-
-// file system module to perform file operations
-'use strict';
-const fs = require('fs');
-
-//import module being used (express is something that I have access to in node program)
-let express = require('express');
-let app = express();
-let server = app.listen(process.env.PORT || 3000);
-app.use(express.static('public')); //redirect users connecting to ip to public folder
-
-//favicon
-app.use('/favicon.ico', express.static('public/data/images/favicon.ico'));
+//blockIndex import
+let rawdata = fs.readFileSync('blockIndex.json');
+let blockIndex = JSON.parse(rawdata);
 
 //server started message
 addToConsole('Server started...');
@@ -315,9 +262,9 @@ function setupGame() {
 
 function createGame(s) {
   let r = [];
-  for (x = 0; x < s; x++) {
+  for (let x = 0; x < s; x++) {
     r[x] = [];
-    for (y = 0; y < s; y++) {
+    for (let y = 0; y < s; y++) {
       let block = parseInt(4*Math.random());
       r[x][y] = loadBlockIndex(block);
     }
