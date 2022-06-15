@@ -11,13 +11,16 @@ class Player {
   }
 
   display() {
+    push();
     translate(this.pos.x, this.pos.y);
-
-    this.drawPlayer();
+    this.drawPlayer(username);
+    pop();
   }
 
-  drawPlayer() {
+  drawPlayer(u) {
     fill(0);
+    textSize(0.5);
+    text(u, 0, -1);
     ellipse(0, 0, 1, 1);
   }
 

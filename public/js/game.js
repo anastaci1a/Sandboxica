@@ -82,6 +82,8 @@ function welcomeScreen() {
 
   if (welcomeCountdown < 0) {
     // welcomeCountdown = welcomeReset;
+    player.sendPos();
+
     gs++;
   }
 }
@@ -98,10 +100,11 @@ function runGame() {
   camera.update(player.pos);
   camera.move();
 
+  let rSize = width/bSize/2;
   for (x = 0; x < game.length; x++) {
     for (y = 0; y < game[0].length; y++) {
       let b = game[x][y];
-      if (dist(x, y, camera.pos.x, camera.pos.y) < width/bSize/2) {
+      if (dist(x, y, camera.pos.x, camera.pos.y) < rSize) {
         noStroke();
         fill(b.color, 50, 90);
         rect(x, y, 1, 1);
@@ -109,15 +112,19 @@ function runGame() {
     }
   }
 
-  push();
   player.manage();
-  pop();
 
   for (let i = 0; i < players.length; i++) {
-    push();
-    translate(players[i].x, players[i].y);
-    player.drawPlayer();
-    pop();
+    let p = players[i];
+
+    // print(player.pos.x, player.pos.y);
+    // print(p.x, p.y);
+    if (p.username != username && dist(camera.pos.x, camera.pos.y, p.x, p.y) < rSize) {
+      push();
+      translate(p.x, p.y);
+      player.drawPlayer(p.username);
+      pop();
+    }
   }
 
   pop();
