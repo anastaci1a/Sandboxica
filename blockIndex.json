@@ -1,7 +1,10 @@
 [
   {
-    "name": "Fire",
-    "properties": "",
+    "name": "Magma",
+    "properties": {
+      "friction": 0.3,
+      "burn": true
+    },
     "col": {
       "hue": 13,
       "sat": 69,
@@ -13,7 +16,9 @@
   },
   {
     "name": "Stone",
-    "properties": "",
+    "properties": {
+      "friction": 0.9
+    },
     "col": {
       "hue": 0,
       "sat": 0,
@@ -25,7 +30,9 @@
   },
   {
     "name": "Dirt",
-    "properties": "",
+    "properties": {
+      "friction": 0.9
+    },
     "col": {
       "hue": 22,
       "sat": 54,
@@ -37,7 +44,9 @@
   },
   {
     "name": "Water",
-    "properties": "",
+    "properties": {
+      "friction": 0.5
+    },
     "col": {
       "hue": 204,
       "sat": 49,
@@ -49,7 +58,10 @@
   },
   {
     "name": "Ice",
-    "properties": "",
+    "properties": {
+      "friction": 0.95,
+      "freeze": true
+    },
     "col": {
       "hue": 204,
       "sat": 32,

@@ -269,7 +269,7 @@ function createGame(s) {
       // let n = new noise.Noise(Math.random());
       let off = 10000*Math.random();
       let sp = 20;
-      let block = parseInt(4*(1 + Noise.simplex2(x/sp, y/sp)));
+      let block = parseInt(3*(1 + Noise.simplex2(x/sp, y/sp)));
       if (block > 4) block = 4; if (block < 0) block = 0;
       r[x][y] = loadBlockIndex(block);
     }

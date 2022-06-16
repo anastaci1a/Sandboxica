@@ -42,7 +42,7 @@ function overlook() {
       fill(b.col.hue, b.col.sat, b.col.bri);
       if (dist(x*bSize, y*bSize, mx, my) < 8*bSize) fill(b.col.hue, b.col.sat, b.col.bri);
       else if (dist(x*bSize, y*bSize, mx, my) < 10*bSize) fill(b.col.hue, b.col.sat/4, b.col.bri/4);
-      rect(x*bSize, y*bSize, bSize, bSize);
+      rect(x*bSize, y*bSize, 1+bSize, 1+bSize);
     }
   }
 
@@ -120,7 +120,7 @@ function runGame() {
       if (dist(x, y, camera.pos.x, camera.pos.y) < rSize) {
         noStroke();
         fill(b.col.hue, b.col.sat, b.col.bri);
-        rect(x, y, 1, 1);
+        rect(x, y, 1.01, 1.01);
       }
     }
   }
@@ -133,12 +133,14 @@ function runGame() {
     if (p.username != username && dist(camera.pos.x, camera.pos.y, p.x, p.y) < rSize) {
       push();
       translate(p.x, p.y);
-      player.drawPlayer(p.username);
+      player.drawPlayer(p.username, p);
       pop();
     }
   }
 
   pop();
+
+  player.fx.manage();
 }
 
 
@@ -155,7 +157,7 @@ function drawMap() {
       let b = game[x][y];
       noStroke();
       fill(b.col.hue, b.col.sat, b.col.bri);
-      rect(x, y, 1, 1);
+      rect(x, y, 1.1, 1.1);
     }
   }
 

@@ -1,7 +1,7 @@
 //***
 function setup() {
   //canvas & colors
-  colorMode(HSB);
+  colorMode(HSB, 360, 100, 100, 255);
   setupCanvas();
   //draw setup
   rectMode(CENTER);
