@@ -4,16 +4,14 @@ let socket;
 socket = io();
 
 //reload page by server's request
-socket.on('reload', reloadPage);
-function reloadPage() {
+socket.on('reload', function() {
   location.reload();
-}
+});
 
 //alert page by server's request
-socket.on('directAlert', reloadPage);
-function reloadPage(str) {
+socket.on('directAlert', function(str) {
   alert(str);
-}
+});
 
 //join message
 function joinMessage() {

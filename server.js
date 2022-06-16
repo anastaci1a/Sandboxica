@@ -9,6 +9,8 @@ app.use(express.static('public')); //redirect users connecting to ip to public f
 //favicon
 app.use('/favicon.ico', express.static('public/data/images/favicon.ico'));
 
+//packages
+const Noise = require('./noisejs.js').noise;
 
 
 //console log of all messages
@@ -16,12 +18,7 @@ let consolelog = [];
 //game
 let game = [];
 //players
-let players = [{
-  id: 0,
-  username: 0,
-  x: 0,
-  y: 0
-}];
+let players = [];
 let usernames = [];
 //blockIndex import
 let rawdata = fs.readFileSync('blockIndex.json');
@@ -38,12 +35,22 @@ let io = socket(server);
 addToConsole('Server connected.');
 
 //load
+reloadClients();
 setupGame();
 
 
 //connections with clients
 io.sockets.on('connection', function(socket) {
   addToConsole('New Connection: ' + socket.id);
+
+  if (getPlayerIndex(socket.id) == null) {
+    players.push({
+      id: socket.id,
+      username: '',
+      x: -1000,
+      y: -1000
+    });
+  }
 
   //when the socket receives a message with the name 'message' run function chatMessage
   socket.on('message', function(data) {
@@ -53,15 +60,7 @@ io.sockets.on('connection', function(socket) {
   //when the socket receives a message with the name 'joinMessage' run function joinMessage
   socket.on('joinMessage', function(data) {
     sendServerMessage(data.user + " has joined the game.");
-
-    if (getPlayerIndex(socket.id) == null) {
-      players.push({
-        id: socket.id,
-        username: data.user,
-        x: 0,
-        y: 0
-      });
-    }
+    players[getPlayerIndex(socket.id)].username = data.user;
   });
 
   //test if username is taken or available
@@ -94,8 +93,8 @@ io.sockets.on('connection', function(socket) {
   });
 
   socket.on('requestGame', function() {
-   socket.emit('sendGame', game);
-   addToConsole('Sent game to ' + username + ' ' + socket.id);
+    updateGame();
+    updatePlayers();
   });
 
   //players stuff
@@ -140,15 +139,18 @@ function reloadClients() {
 function updatePlayers() {
   io.sockets.emit('updatePlayers', players);
 }
+function updateGame() {
+   io.sockets.emit('sendGame', game);
+}
 function getPlayer(id) {
-  for (i = 0; i < players.length; i++) {
+  for (let i = 0; i < players.length; i++) {
     if (players[i].id = id) {
       return players[i];
     }
   }
 }
 function getPlayerIndex(id) {
-  for (i = 0; i < players.length; i++) {
+  for (let i = 0; i < players.length; i++) {
     if (players[i].id == id) {
       return i;
     }
@@ -235,7 +237,6 @@ function setupGame() {
   //load save file
   if (saveFileExists) {
     addToConsole('Loading save file...');
-    const fs = require('fs');
     try {
       const jsonData = JSON.parse(fs.readFileSync('save.json', 'utf-8'));
     } catch(err) {
@@ -265,7 +266,11 @@ function createGame(s) {
   for (let x = 0; x < s; x++) {
     r[x] = [];
     for (let y = 0; y < s; y++) {
-      let block = parseInt(4*Math.random());
+      // let n = new noise.Noise(Math.random());
+      let off = 10000*Math.random();
+      let sp = 20;
+      let block = parseInt(4*(1 + Noise.simplex2(x/sp, y/sp)));
+      if (block > 4) block = 4; if (block < 0) block = 0;
       r[x][y] = loadBlockIndex(block);
     }
   }

@@ -1,5 +1,17 @@
 [
   {
+    "name": "Fire",
+    "properties": "",
+    "col": {
+      "hue": 13,
+      "sat": 69,
+      "bri": 100,
+      "hran": 20,
+      "sran": 0,
+      "bran": 10
+    }
+  },
+  {
     "name": "Stone",
     "properties": "",
     "col": {
@@ -36,15 +48,15 @@
     }
   },
   {
-    "name": "Fire",
+    "name": "Ice",
     "properties": "",
     "col": {
-      "hue": 13,
-      "sat": 69,
+      "hue": 204,
+      "sat": 32,
       "bri": 100,
-      "hran": 20,
+      "hran": 10,
       "sran": 0,
-      "bran": 10
+      "bran": 5
     }
   }
 ]

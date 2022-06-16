@@ -46,6 +46,19 @@ function overlook() {
     }
   }
 
+  for (let i = 0; i < players.length; i++) {
+    let p = players[i];
+    if (p.username != username) {
+      push();
+      translate(p.x*bSize, p.y*bSize);
+      stroke(0);
+      strokeWeight(1*bSize);
+      noFill();
+      ellipse(0, 0, 5*bSize, 5*bSize);
+      pop();
+    }
+  }
+
   pop();
 
   if (mouse.tap && !overlooked && inBounds(mx, my, 0, 0, bSize*game.length, bSize*game[0].length)) {
