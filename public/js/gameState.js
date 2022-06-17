@@ -4,19 +4,40 @@ function setupGameState() {
   gs = 0;
 }
 
+const GameStates = {
+	HOME_MENU: 0,
+	USERNAME_TEST: 1,
+	LOADING_USERNAME: 2,
+	DOUBLE_CHECK_USERNAME: 3,
+	LOAD_CHUNKS: 4,
+	JOIN_MESSAGE: 5,
+	OVERLOOK: 6,
+	WELCOME_SCREEN: 7,
+	GAME: 8,
+	MAP: 9
+}
+
 function gameState() {
+  if (gs == GameStates.WELCOME_SCREEN) {
+	backgroundColor = color(0, 0, 0);
+  } else {
+	backgroundColor = color((frameCount / 2) % 360, 20, 100);
+  }
+
+  if (gs != GameStates.GAME) { // Don't refresh background ingame (already drawing blocks over everything)
+	drawBackground();
+  }
+
   switch(gs) {
-    //home menu
-    case 0: {
+    case GameStates.HOME_MENU: {
       let bt = new Button("Join Game!", (frameCount / 1.5) % 360, width/2, height/2, height/10);
       bt.manage();
 
-      if (bt.released) { gs = 1; }
+      if (bt.released) { gs = GameStates.USERNAME_TEST; }
       break;
     }
 
-    //username test
-    case 1: {
+	case GameStates.USERNAME_TEST: {
       let u = messageName.value();
       u = u.trim();
       const yn = confirm('Do you want your username to be "' + u + '"?');
@@ -24,53 +45,49 @@ function gameState() {
       requestUsername();
       messageName.value(u);
 
-      if (yn) gs = 2;
-      else gs--;
+      if (yn) gs = GameStates.LOADING_USERNAME;
+      else gs = GameStates.HOME_MENU;
 
       break;
     }
 
-    //loading username
-    case 2: {
+	case GameStates.LOADING_USERNAME: {
       textSize(height/20);
       text("Loading...", width/2, height/2);
 
       if (username != null) {
         if (username == "_UNAVAILABLE_") {
           alert('Username "' + messageName.value() + '" is unavailable.');
-          gs = 0;
+          gs = GameStates.HOME_MENU;
           break;
         } else {
-          gs++;
+		  gs = GameStates.DOUBLE_CHECK_USERNAME;
           break;
         }
       }
       break;
     }
 
-    //double-check username
-    case 3: {
+	case GameStates.DOUBLE_CHECK_USERNAME: {
       if (username == "_UNAVAILABLE_") {
         alert('Username "' + messageName.value() + '" is unavailable.');
-        gs = 0;
+		gs = GameStates.HOME_MENU;
       } else {
         requestGame();
-        gs++;
+        gs = GameStates.LOAD_CHUNKS;
       }
 
       break;
     }
 
-    //load chunks
-    case 4: {
+	case GameStates.LOAD_CHUNKS: {
       textSize(height/20);
       text("Downloading Chunks...", width/2, height/2);
 
       break;
     }
 
-    //join message
-    case 5: {
+	case GameStates.JOIN_MESSAGE: {
       joinMessage();
       lockUsername(true);
       lockMessage(false);
@@ -80,22 +97,19 @@ function gameState() {
       break;
     }
 
-    //the overlook
-    case 6: {
+	case GameStates.OVERLOOK: {
       overlook();
 
       break;
     }
 
-    //welcome screen
-    case 7: {
+	case GameStates.WELCOME_SCREEN: {
       welcomeScreen();
 
       break;
     }
 
-    //game
-    case 8: {
+	case GameStates.GAME: {
       let h = height/15;
       textSize(h/3);
       let bt1pos = textWidth('View Map')/2 + height/20;
@@ -107,27 +121,19 @@ function gameState() {
       bt1.manage();
       bt2.manage();
 
-      if (bt1.released) { gs++; }
-      if (bt2.released) { gs = 6; }
+      if (bt1.released) { gs = GameStates.MAP; }
+	  if (bt2.released) { gs = GameStates.OVERLOOK; }
 
       break;
     }
 
-    //map
-    case 9: {
+	case GameStates.MAP: {
       let bt = new Button('Back to Game', (frameCount / 1.5) % 360, width/2, height/11, height/12);
 
       drawMap();
       bt.manage();
 
-      if (bt.released) { gs--; }
+      if (bt.released) { gs = GameStates.GAME }
     }
-
-
-
-    // //admin room
-    // case 6: {
-    //   break;
-    // }
   }
 }

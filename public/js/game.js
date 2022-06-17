@@ -1,5 +1,5 @@
 let overlookZoom = 1;
-let overlooked = false;
+let overlooked = false; // zoomy zoom
 let overlookedPos;
 let overlookedZoom = 1;
 function overlook() {
@@ -33,18 +33,35 @@ function overlook() {
     scale(overlookedZoom);
     translate(-size.x/2, -size.y/2);
     overlookedZoom = pow(overlookedZoom, 1.2);
-  }
+  };
 
+  noStroke();
   for (x = 0; x < game.length; x++) {
     for (y = 0; y < game[0].length; y++) {
-      let b = game[x][y];
-      noStroke();
-      fill(b.col.hue, b.col.sat, b.col.bri);
-      if (dist(x*bSize, y*bSize, mx, my) < 8*bSize) fill(b.col.hue, b.col.sat, b.col.bri);
-      else if (dist(x*bSize, y*bSize, mx, my) < 10*bSize) fill(b.col.hue, b.col.sat/4, b.col.bri/4);
-      rect(x*bSize, y*bSize, 1+bSize, 1+bSize);
+      if (!inBounds(x, y, 0, 0, game.length, game[0].length)) {
+        continue;
+	  } else if (dist(x * bSize, y * bSize, mx, my) > 8 * bSize && dist(x * bSize, y * bSize, mx, my) < 10 * bSize) {
+		let b = game[x][y];
+		fill(b.col.hue, b.col.sat / 4, b.col.bri / 4);
+	  } else {
+        let b = game[x][y];
+        fill(b.col.hue, b.col.sat, b.col.bri);
+      }
+
+      rect(x*bSize, y*bSize, 1.01*bSize, 1.01*bSize);
     }
   }
+
+//   for (x = 0; x < game.length; x++) {
+//     for (y = 0; y < game[0].length; y++) {
+//       let b = game[x][y];
+//       noStroke();
+//       fill(b.col.hue, b.col.sat, b.col.bri);
+    //   if (dist(x*bSize, y*bSize, mx, my) < 8*bSize) fill(b.col.hue, b.col.sat, b.col.bri);
+//       else if (dist(x*bSize, y*bSize, mx, my) < 10*bSize) fill(b.col.hue, b.col.sat/4, b.col.bri/4);
+//       rect(x*bSize, y*bSize, 1+bSize, 1+bSize);
+//     }
+//   }
 
   for (let i = 0; i < players.length; i++) {
     let p = players[i];
@@ -85,8 +102,6 @@ function overlook() {
 let welcomeReset = 90;
 let welcomeCountdown = welcomeReset;
 function welcomeScreen() {
-  backgroundColor = color(0, 0, 0);
-
   fill(100);
   textSize(width/20);
   text('Welcome to Sandboxica.', width/2, height/2);
@@ -113,15 +128,21 @@ function runGame() {
   camera.update(player.pos);
   camera.move();
 
-  let rSize = width/bSize/2;
-  for (x = 0; x < game.length; x++) {
-    for (y = 0; y < game[0].length; y++) {
-      let b = game[x][y];
-      if (dist(x, y, camera.pos.x, camera.pos.y) < rSize) {
-        noStroke();
-        fill(b.col.hue, b.col.sat, b.col.bri);
-        rect(x, y, 1.01, 1.01);
-      }
+  let wSize = width / bSize;
+  let hSize = height / bSize;
+  let rSize = Math.min(wSize, hSize) / 2;
+
+  noStroke();
+  for (x = Math.floor(camera.pos.x - wSize/2); x < Math.ceil(camera.pos.x + wSize/2); x++) {
+	for (y = Math.floor(camera.pos.y - hSize/2); y < Math.ceil(camera.pos.y + hSize/2); y++) {
+	  if (!inBounds(x, y, 0, 0, game.length, game[0].length)) {
+		fill(backgroundColor);
+	  } else {
+		let b = game[x][y];
+		fill(b.col.hue, b.col.sat, b.col.bri);
+	  }
+
+      rect(x, y, 1.01, 1.01);
     }
   }
 
