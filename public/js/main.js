@@ -1,3 +1,5 @@
+p5.disableFriendlyErrors = true; // better performance
+
 //***
 function setup() {
   //canvas & colors
@@ -19,10 +21,6 @@ function setup() {
 
 //***
 function draw() {
-  //background
-  drawBackground();
-  backgroundColor = color((frameCount / 2) % 360, 20, 100);
-
   //game
   gameState();
 
