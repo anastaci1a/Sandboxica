@@ -40,15 +40,15 @@ function overlook() {
     for (y = 0; y < game[0].length; y++) {
       if (!inBounds(x, y, 0, 0, game.length, game[0].length)) {
         continue;
-	  } else if (dist(x * bSize, y * bSize, mx, my) > 8 * bSize && dist(x * bSize, y * bSize, mx, my) < 10 * bSize) {
-		let b = game[x][y];
-		fill(b.col.hue, b.col.sat / 4, b.col.bri / 4);
-	  } else {
+  	  } else if (dist(x * bSize, y * bSize, mx, my) > 8 * bSize && dist(x * bSize, y * bSize, mx, my) < 10 * bSize) {
+    		let b = game[x][y];
+    		fill(b.col.hue, b.col.sat / 4, b.col.bri / 4);
+  	  } else {
         let b = game[x][y];
         fill(b.col.hue, b.col.sat, b.col.bri);
       }
 
-      rect(x*bSize, y*bSize, 1.01*bSize, 1.01*bSize);
+      rect(x*bSize, y*bSize, 1.05*bSize, 1.05*bSize);
     }
   }
 
@@ -81,7 +81,7 @@ function overlook() {
   if (mouse.tap && !overlooked && inBounds(mx, my, 0, 0, bSize*game.length, bSize*game[0].length)) {
     overlooked = true;
     overlookedPos = createVector(mouseX, mouseY);
-    overlookedZoom = 1.005;
+    overlookedZoom = 1.001;
 
     player = new Player(int(mx/bSize), int(my/bSize));
     camera = new Camera(player.pos);
@@ -130,18 +130,16 @@ function runGame() {
 
   let wSize = width / bSize;
   let hSize = height / bSize;
-  let rSize = Math.min(wSize, hSize) / 2;
 
   noStroke();
-  for (x = Math.floor(camera.pos.x - wSize/2); x < Math.ceil(camera.pos.x + wSize/2); x++) {
-	for (y = Math.floor(camera.pos.y - hSize/2); y < Math.ceil(camera.pos.y + hSize/2); y++) {
-	  if (!inBounds(x, y, 0, 0, game.length, game[0].length)) {
-		fill(backgroundColor);
-	  } else {
-		let b = game[x][y];
-		fill(b.col.hue, b.col.sat, b.col.bri);
-	  }
-
+  for (x = floor(camera.pos.x - wSize/2); x < ceil(camera.pos.x + wSize/2); x++) {
+  	for (y = floor(camera.pos.y - hSize/2); y < ceil(camera.pos.y + hSize/2); y++) {
+  	  if (!inBounds(x, y, 0, 0, game.length, game[0].length)) {
+  		    fill(backgroundColor);
+  	  } else {
+    		let b = game[x][y];
+    		fill(b.col.hue, b.col.sat, b.col.bri);
+  	  }
       rect(x, y, 1.01, 1.01);
     }
   }
@@ -151,7 +149,7 @@ function runGame() {
   for (let i = 0; i < players.length; i++) {
     let p = players[i];
 
-    if (p.username != username && dist(camera.pos.x, camera.pos.y, p.x, p.y) < rSize) {
+    if (p.username != username && (camera.pos.x -wSize/2 - 0.5 < p.x && p.x < camera.pos.x + wSize/2 + 0.5) && (camera.pos.y - hSize/2 - 0.5 < p.y && p.y < camera.pos.y + hSize/2 + 0.5)) {
       push();
       translate(p.x, p.y);
       player.drawPlayer(p.username, p);

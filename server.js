@@ -41,6 +41,7 @@ setupGame();
 
 //connections with clients
 io.sockets.on('connection', function(socket) {
+  let joined = false;
   addToConsole('New Connection: ' + socket.id);
 
   if (getPlayerIndex(socket.id) == null) {
@@ -54,13 +55,23 @@ io.sockets.on('connection', function(socket) {
 
   //when the socket receives a message with the name 'message' run function chatMessage
   socket.on('message', function(data) {
+    data = {
+      user: username,
+      msg: data.msg,
+      style: ''
+    }
     sendMessage(data);
   });
 
   //when the socket receives a message with the name 'joinMessage' run function joinMessage
   socket.on('joinMessage', function(data) {
-    sendServerMessage(data.user + " has joined the game.");
-    players[getPlayerIndex(socket.id)].username = data.user;
+    if (!joined) {
+      sendServerMessage(data.user + " has joined the game.");
+      players[getPlayerIndex(socket.id)].username = data.user;
+      joined = true;
+    } else {
+      sendServerMessage(username + " has joined the game...again...for some reason?");
+    }
   });
 
   //test if username is taken or available
@@ -85,6 +96,7 @@ io.sockets.on('connection', function(socket) {
 
   socket.on('disconnect', function() {
     addToConsole('Disconnected: ' + username + ' ' + socket.id);
+    sendServerMessage(username + " has left the game.");
 
     usernames.splice(usernames.indexOf(username), 1);
     players.splice(getPlayerIndex(socket.id), 1);

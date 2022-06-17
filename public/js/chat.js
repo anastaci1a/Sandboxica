@@ -59,9 +59,7 @@ function setupChat() {
   function msgSend() {
     let msg = messageInput.value();
     let data = { //msg data to send
-      user: messageName.value(),
-      msg: msg,
-      style: ''
+      msg: msg
     }
     //user message
     if (messageInput.value() != '' && messageName.value() != '') {

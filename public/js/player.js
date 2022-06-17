@@ -15,15 +15,17 @@ class Player {
   display() {
     push();
     translate(this.pos.x, this.pos.y);
-    this.drawPlayer(username);
+    this.drawPlayer(username, this.pos);
     pop();
   }
 
   drawPlayer(u, p) {
+    let b = this.blockOn(p);
+
     strokeWeight(0.1);
     stroke(0);
-    if (this.blockOn().properties.burn) stroke(0, 100, 100*(1+sin(frameCount/10))/2);
-    if (this.blockOn().properties.freeze) stroke(180, 25, 100*(1+sin(frameCount/20))/2);
+    if (b.properties.burn) stroke(0, 100, 100*(1+sin(frameCount/10))/2);
+    if (b.properties.freeze) stroke(180, 25, 100*(1+sin(frameCount/20))/2);
     fill(0);
     ellipse(0, 0, 1, 1);
 
@@ -41,20 +43,20 @@ class Player {
     let acc = dir.normalize().copy().mult(this.spd);
 
     this.vel.add(acc).limit(this.spd);
-    this.vel.mult(this.blockOn().properties.friction);
+    this.vel.mult(this.blockOn(this.pos).properties.friction);
     this.pos.add(this.vel);
 
     this.pos.x %= game.length;
     this.pos.y %= game[0].length;
 
-    if (dir.mag() > 0) this.sendPos();
+    if (this.vel.mag() > 0) this.sendPos();
 
-    this.fx.burn = this.blockOn().properties.burn;
-    this.fx.freeze = this.blockOn().properties.freeze;
+    this.fx.burn = this.blockOn(this.pos).properties.burn;
+    this.fx.freeze = this.blockOn(this.pos).properties.freeze;
   }
 
-  blockOn() {
-    let p = createVector(round(this.pos.x), round(this.pos.y));
+  blockOn(_p) {
+    let p = createVector(round(_p.x), round(_p.y));
     return game[p.x][p.y];
   }
 

@@ -5,16 +5,16 @@ function setupGameState() {
 }
 
 const GameStates = {
-	HOME_MENU: 0,
-	USERNAME_TEST: 1,
-	LOADING_USERNAME: 2,
-	DOUBLE_CHECK_USERNAME: 3,
-	LOAD_CHUNKS: 4,
-	JOIN_MESSAGE: 5,
-	OVERLOOK: 6,
-	WELCOME_SCREEN: 7,
-	GAME: 8,
-	MAP: 9
+  HOME_MENU: 0,
+  USERNAME_TEST: 1,
+  LOADING_USERNAME: 2,
+  DOUBLE_CHECK_USERNAME: 3,
+  LOAD_CHUNKS: 4,
+  JOIN_MESSAGE: 5,
+  OVERLOOK: 6,
+  WELCOME_SCREEN: 7,
+  GAME: 8,
+  MAP: 9
 }
 
 function gameState() {
@@ -37,7 +37,7 @@ function gameState() {
       break;
     }
 
-	case GameStates.USERNAME_TEST: {
+	  case GameStates.USERNAME_TEST: {
       let u = messageName.value();
       u = u.trim();
       const yn = confirm('Do you want your username to be "' + u + '"?');
@@ -51,7 +51,7 @@ function gameState() {
       break;
     }
 
-	case GameStates.LOADING_USERNAME: {
+	  case GameStates.LOADING_USERNAME: {
       textSize(height/20);
       text("Loading...", width/2, height/2);
 
@@ -61,17 +61,17 @@ function gameState() {
           gs = GameStates.HOME_MENU;
           break;
         } else {
-		  gs = GameStates.DOUBLE_CHECK_USERNAME;
+		      gs = GameStates.DOUBLE_CHECK_USERNAME;
           break;
         }
       }
       break;
     }
 
-	case GameStates.DOUBLE_CHECK_USERNAME: {
+  	case GameStates.DOUBLE_CHECK_USERNAME: {
       if (username == "_UNAVAILABLE_") {
         alert('Username "' + messageName.value() + '" is unavailable.');
-		gs = GameStates.HOME_MENU;
+		    gs = GameStates.HOME_MENU;
       } else {
         requestGame();
         gs = GameStates.LOAD_CHUNKS;
@@ -80,14 +80,14 @@ function gameState() {
       break;
     }
 
-	case GameStates.LOAD_CHUNKS: {
+  	case GameStates.LOAD_CHUNKS: {
       textSize(height/20);
       text("Downloading Chunks...", width/2, height/2);
 
       break;
     }
 
-	case GameStates.JOIN_MESSAGE: {
+  	case GameStates.JOIN_MESSAGE: {
       joinMessage();
       lockUsername(true);
       lockMessage(false);
@@ -97,25 +97,27 @@ function gameState() {
       break;
     }
 
-	case GameStates.OVERLOOK: {
+	  case GameStates.OVERLOOK: {
       overlook();
 
       break;
     }
 
-	case GameStates.WELCOME_SCREEN: {
+  	case GameStates.WELCOME_SCREEN: {
       welcomeScreen();
 
       break;
     }
 
-	case GameStates.GAME: {
+  	case GameStates.GAME: {
       let h = height/15;
       textSize(h/3);
-      let bt1pos = textWidth('View Map')/2 + height/20;
-      let bt1 = new Button('View Map', (frameCount / 1.5) % 360, bt1pos, bt1pos, h);
-      let bt2pos = textWidth('The Overlook')/2 + height/20;
-      let bt2 = new Button("The Overlook", (frameCount / 1.5) % 360, bt2pos, 1.5*bt2pos, h);
+      let bt1Text = 'View Map';
+      let bt1pos = textWidth(bt1Text)/2 + height/20;
+      let bt1 = new Button(bt1Text, (frameCount / 1.5) % 360, bt1pos, bt1pos, h);
+      let bt2Text = 'The Overlook';
+      let bt2pos = textWidth(bt2Text)/2 + height/20;
+      let bt2 = new Button(bt2Text, (frameCount / 1.5) % 360, bt2pos, 1.5*bt2pos, h);
 
       runGame();
       bt1.manage();
@@ -127,7 +129,7 @@ function gameState() {
       break;
     }
 
-	case GameStates.MAP: {
+  	case GameStates.MAP: {
       let bt = new Button('Back to Game', (frameCount / 1.5) % 360, width/2, height/11, height/12);
 
       drawMap();
