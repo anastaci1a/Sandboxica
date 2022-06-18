@@ -76,22 +76,26 @@ io.sockets.on('connection', function(socket) {
 
   //test if username is taken or available
   let username = null;
+  let usernamed = false;
   socket.on('usernameTest', function(data) {
-    let u = data.username.toLowerCase();
+    if (!usernamed) {
+      let u = data.username.toLowerCase();
 
-    let taken = false;
-    for (let i = 0; i < usernames.length; i++) {
-      if (u == usernames[i]) { taken = true; }
+      let taken = false;
+      for (let i = 0; i < usernames.length; i++) {
+        if (u == usernames[i]) { taken = true; }
+      }
+
+      let r = { available: false, test: usernames };
+      if (!taken) {
+        username = u;
+        r.available = true;
+        usernames.splice(0, 0, u);
+      }
+
+      socket.emit('usernameAvailable', r);
+      usernamed = true;
     }
-
-    let r = { available: false, test: usernames };
-    if (!taken) {
-      username = u;
-      r.available = true;
-      usernames.splice(0, 0, u);
-    }
-
-    socket.emit('usernameAvailable', r);
   });
 
   socket.on('disconnect', function() {
@@ -274,12 +278,13 @@ function setupGame() {
 
 
 function createGame(s) {
+  let off = 10000*Math.random();
+  Noise.seed(Math.random());
   let r = [];
   for (let x = 0; x < s; x++) {
     r[x] = [];
     for (let y = 0; y < s; y++) {
       // let n = new noise.Noise(Math.random());
-      let off = 10000*Math.random();
       let sp = 20;
       let block = parseInt(3*(1 + Noise.simplex2(x/sp, y/sp)));
       if (block > 4) block = 4; if (block < 0) block = 0;
