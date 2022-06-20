@@ -131,20 +131,23 @@ function runGame() {
   let wSize = width / bSize;
   let hSize = height / bSize;
 
+  let m = createVector((mouseX - width/2)/bSize + camera.pos.x, (mouseY - height/2)/bSize + camera.pos.y);
+
   noStroke();
   for (x = floor(camera.pos.x - wSize/2); x < ceil(camera.pos.x + wSize/2); x++) {
   	for (y = floor(camera.pos.y - hSize/2); y < ceil(camera.pos.y + hSize/2); y++) {
-  	  if (!inBounds(x, y, 0, 0, game.length, game[0].length)) {
-  		    fill(backgroundColor);
-  	  } else {
-    		let b = game[x][y];
-    		fill(b.col.hue, b.col.sat, b.col.bri);
-  	  }
-      rect(x, y, 1.01, 1.01);
+  	  try {
+        let b = game[x][y];
+        if (x == round(m.x) && y == round(m.y)) fill(b.col.hue, b.col.sat, 0.5*b.col.bri);
+    		else fill(b.col.hue, b.col.sat, b.col.bri);
+        rect(x, y, 1.01, 1.01);
+      }
+      catch(e) {}
     }
   }
 
-  player.manage();
+  if (!userInTextbox()) player.update();
+  player.display();
 
   for (let i = 0; i < players.length; i++) {
     let p = players[i];
@@ -157,11 +160,13 @@ function runGame() {
     }
   }
 
+  ellipse(mx, my, 0.5, 0.5);
+
   pop();
 
   player.fx.manage();
+  player.gui.manage(player, m);
 }
-
 
 function drawMap() {
   push();
@@ -181,4 +186,107 @@ function drawMap() {
   }
 
   pop();
+}
+
+let bloperties, combineCP;
+let combineState = 0;
+let combineSettings;
+let combineCountdown, combineReset = 60;
+function runCombine() {
+  //big textbox
+  let txt = 'Combine-O-Matic';
+  let txtSize = width/22;
+  textSize(txtSize);
+  strokeWeight(width/200);
+  stroke(0);
+  fill((frameCount / 1.5 + 180) % 360, 100, 100);
+  rect(width/2, height/10, 1.2*textWidth(txt), 1.5*txtSize, width/100);
+  noStroke();
+  fill((frameCount / 1.5) % 360, 100, 100);
+  text(txt, width/2, height/10);
+
+  //combining text
+  fill(0);
+  textSize(txtSize/2);
+  text('(Combining ' + player.gui.blocks[0].name + ' and ' + player.gui.blocks[1].name + ')', width/2, height/10 + 1.5*txtSize);
+
+  //setup for combining
+  switch(combineState) {
+    case 0: {
+      socket.emit('requestBloperies');
+      combineState++;
+      break;
+    }
+
+    //wait for server to give bloperties
+    case 1: {
+      fill(0);
+      textSize(txtSize);
+      text('Loading...', width/2, height/2);
+      break;
+    }
+
+    //setup menu
+    case 2: {
+      //color picker
+      // combineCP = new createColorPicker(color(0, 0, 0));
+      // combineCP.position(width/2, height/2);
+      //
+      combineState++;
+    }
+
+    //menu
+    case 3: {
+      let baseY = height/10 + 3*txtSize
+      for (let i = 0; i < bloperties.length; i++) {
+        let b = bloperties[i];
+
+        let drawArea = 0.5*(height - baseY);
+        let y = baseY + (i / (bloperties.length - 1)) * drawArea;
+        let h = drawArea / bloperties.length;
+
+        let bt = new Button(b.name + ': ' + b.value, (frameCount / 1.5) % 360, width/2, y, h);
+        bt.manage();
+
+        if (bt.click) {
+          switch(b.type) {
+            case 0: {
+              b.value = !b.value;
+
+              break;
+            }
+
+            case 1: {
+              b.value = truncateDecimal(100, constrainAdd(b.value, 0.05, b.min, b.max));
+
+              break;
+            }
+          }
+        }
+      }
+
+      //combine button
+      let h = height/10;
+      textSize(h/3);
+      let txt = 'Combine!';
+      let x = width - 1.5*textWidth(txt);
+      let y = height - 1.5*h;
+      let bt = new Button(txt, (frameCount / 1.5) % 360, x, y, h);
+      bt.manage();
+
+      //combine
+      if (bt.click) {
+        let data = [
+          bloperties,
+          {
+            hue: 0,
+            sat: 0,
+            bri: 0
+          }
+        ]
+
+        socket.emit('newBlock', bloperties);
+      }
+    }
+  }
 }

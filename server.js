@@ -1,4 +1,4 @@
-// file system module to perform file operations
+//file system module to perform file operations
 'use strict';
 const fs = require('fs');
 //import module being used (express is something that I have access to in node program)
@@ -21,8 +21,11 @@ let game = [];
 let players = [];
 let usernames = [];
 //blockIndex import
-let rawdata = fs.readFileSync('blockIndex.json');
-let blockIndex = JSON.parse(rawdata);
+let rawBlockIndex = fs.readFileSync('blockIndex.json');
+let blockIndex = JSON.parse(rawBlockIndex);
+//block properties
+let rawBloperties = fs.readFileSync('bloperties.json');
+let bloperties = JSON.parse(rawBloperties)
 
 //server started message
 addToConsole('Server started...');
@@ -122,6 +125,11 @@ io.sockets.on('connection', function(socket) {
    }
 
    updatePlayers();
+  });
+
+  //send bloperties
+  socket.on('requestBloperies', function(pos) {
+    socket.emit('bloperties', bloperties);
   });
 });
 
@@ -278,13 +286,13 @@ function setupGame() {
 
 
 function createGame(s) {
-  let off = 10000*Math.random();
   Noise.seed(Math.random());
+  let off = 10000*Math.random();
+
   let r = [];
   for (let x = 0; x < s; x++) {
     r[x] = [];
     for (let y = 0; y < s; y++) {
-      // let n = new noise.Noise(Math.random());
       let sp = 20;
       let block = parseInt(3*(1 + Noise.simplex2(x/sp, y/sp)));
       if (block > 4) block = 4; if (block < 0) block = 0;

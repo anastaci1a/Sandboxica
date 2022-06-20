@@ -54,3 +54,9 @@ socket.on('updatePlayers', function(data) {
   //update local array
   players = data;
 });
+
+//get bloperties
+socket.on('bloperties', function(data) {
+  bloperties = data;
+  combineState = 2;
+});

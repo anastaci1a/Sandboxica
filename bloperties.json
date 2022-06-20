@@ -1,0 +1,24 @@
+[
+  {
+    "name": "friction",
+    "type": 1,
+    "value": 0.9,
+    "min": 0.1,
+    "max": 0.99
+  },
+  {
+    "name": "freeze",
+    "type": 0,
+    "value": false
+  },
+  {
+    "name": "burn",
+    "type": 0,
+    "value": false
+  },
+  {
+    "name": "alive",
+    "type": 0,
+    "value": false
+  }
+]

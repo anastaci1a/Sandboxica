@@ -127,3 +127,7 @@ function elementPos() {
   chatlogDiv.position(padding, height / 2);
   chatlogDiv.size(12 * padding, height / 2 - 5 * padding);
 }
+
+function userInTextbox() {
+  return messageInput.value().length > 0;
+}

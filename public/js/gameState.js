@@ -14,14 +14,15 @@ const GameStates = {
   OVERLOOK: 6,
   WELCOME_SCREEN: 7,
   GAME: 8,
-  MAP: 9
+  MAP: 9,
+  COMBINE: 10
 }
 
 function gameState() {
   if (gs == GameStates.WELCOME_SCREEN) {
-	backgroundColor = color(0, 0, 0);
+    backgroundColor = color(0, 0, 0);
   } else {
-	backgroundColor = color((frameCount / 2) % 360, 20, 100);
+    backgroundColor = color((frameCount / 2) % 360, 20, 100);
   }
 
   if (gs != GameStates.GAME) { // Don't refresh background ingame (already drawing blocks over everything)
@@ -136,6 +137,10 @@ function gameState() {
       bt.manage();
 
       if (bt.released) { gs = GameStates.GAME }
+    }
+
+    case GameStates.COMBINE: {
+      runCombine();
     }
   }
 }
