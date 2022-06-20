@@ -69,6 +69,8 @@ class Player {
 class GUI {
   constructor() {
     this.blocks = [];
+    this.mode = 0;
+    this.heldBlock = null;
   }
 
   manage(p, m) {
@@ -77,16 +79,23 @@ class GUI {
   }
 
   update(p, m) {
-    let currBlock = null;
-    try {
-      currBlock = game[round(m.x)][round(m.y)];
-    }
-    catch(e) {}
+    if (this.mode == 0) {
+      let currBlock = null;
+      if (dist(player.pos.x, player.pos.y, m.x, m.y) < 5Y) {
+        try {
+          currBlock = game[round(m.x)][round(m.y)];
+        }
+        catch(e) {}
 
-    if (mouse.tap && currBlock != null) {
-      if (this.blocks.length < 2) {
-        this.blocks.push(currBlock);
+        if (mouse.tap && currBlock != null) {
+          if (this.blocks.length < 2) {
+            this.blocks.push(currBlock);
+          }
+        }
       }
+    }
+    if (this.mode == 1) {
+
     }
   }
 
@@ -94,30 +103,37 @@ class GUI {
     let h = height/15;
     textSize(h/3);
 
-    let bt1, bt2;
 
-    if (this.blocks.length >= 1) {
-      let bt1Text = '   ' + this.blocks[0].name + '   ';
-      let bt1Pos = textWidth(bt1Text)/2
-      bt1 = new Button(bt1Text, this.blocks[0].col.hue, width/2 - bt1Pos, height - 1.5*h, h);
-      bt1.manage();
+    if (this.mode == 0) {
+      let bt1, bt2;
+
+      if (this.blocks.length >= 1) {
+        let bt1Text = '   ' + this.blocks[0].name + '   ';
+        let bt1Pos = textWidth(bt1Text)/2
+        bt1 = new Button(bt1Text, this.blocks[0].col.hue, width/2 - bt1Pos, height - 1.5*h, h);
+        bt1.manage();
+      }
+
+      if (this.blocks.length == 2) {
+        let bt2Text = '   ' + this.blocks[1].name + '   ';
+        let bt2Pos = textWidth(bt2Text)/2 + height/20;
+        bt2 = new Button(bt2Text, this.blocks[1].col.hue, width/2 + bt2Pos, height - 1.5*h, h);
+        bt2.manage();
+
+        let btClear = new Button('Clear Selection', (frameCount / 1.5) % 360, (bt1.pos.x + bt2.pos.x)/2, height - 4.25*h, h);
+        btClear.manage();
+        if (btClear.click) { this.blocks = []; }
+
+        let btCombine = new Button('Combine Blocks', (frameCount / 1.5) % 360, (bt1.pos.x + bt2.pos.x)/2, height - 3*h, h);
+        btCombine.manage();
+        if (btCombine.click) {
+          gs = GameStates.COMBINE;
+        }
+      }
     }
 
-    if (this.blocks.length == 2) {
-      let bt2Text = '   ' + this.blocks[1].name + '   ';
-      let bt2Pos = textWidth(bt2Text)/2 + height/20;
-      bt2 = new Button(bt2Text, this.blocks[1].col.hue, width/2 + bt2Pos, height - 1.5*h, h);
-      bt2.manage();
+    if (this.mode == 1) {
 
-      let btClear = new Button('Clear Selection', (frameCount / 1.5) % 360, (bt1.pos.x + bt2.pos.x)/2, height - 4.25*h, h);
-      btClear.manage();
-      if (btClear.click) { this.blocks = []; }
-
-      let btCombine = new Button('Combine Blocks', (frameCount / 1.5) % 360, (bt1.pos.x + bt2.pos.x)/2, height - 3*h, h);
-      btCombine.manage();
-      if (btCombine.click) {
-        gs = GameStates.COMBINE;
-      }
     }
   }
 }

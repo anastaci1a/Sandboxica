@@ -70,7 +70,8 @@ io.sockets.on('connection', function(socket) {
   socket.on('joinMessage', function(data) {
     if (!joined) {
       sendServerMessage(data.user + " has joined the game.");
-      players[getPlayerIndex(socket.id)].username = data.user;
+      try { players[getPlayerIndex(socket.id)].username = data.user; }
+      catch(e) {}
       joined = true;
     } else {
       sendServerMessage(username + " has joined the game...again...for some reason?");

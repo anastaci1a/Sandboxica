@@ -85,6 +85,8 @@ function gameState() {
       textSize(height/20);
       text("Downloading Chunks...", width/2, height/2);
 
+      if (game != null) gs = GameStates.JOIN_MESSAGE;
+
       break;
     }
 
@@ -93,7 +95,7 @@ function gameState() {
       lockUsername(true);
       lockMessage(false);
 
-      gs++;
+      gs = GameStates.OVERLOOK;
 
       break;
     }

@@ -42,7 +42,7 @@ function overlook() {
         continue;
   	  } else if (dist(x * bSize, y * bSize, mx, my) > 8 * bSize && dist(x * bSize, y * bSize, mx, my) < 10 * bSize) {
     		let b = game[x][y];
-    		fill(b.col.hue, b.col.sat / 4, b.col.bri / 4);
+    		fill(b.col.hue, b.col.sat, 0.5*b.col.bri);
   	  } else {
         let b = game[x][y];
         fill(b.col.hue, b.col.sat, b.col.bri);
@@ -132,13 +132,14 @@ function runGame() {
   let hSize = height / bSize;
 
   let m = createVector((mouseX - width/2)/bSize + camera.pos.x, (mouseY - height/2)/bSize + camera.pos.y);
+  let mouseNearPlayer = dist(player.pos.x, player.pos.y, m.x, m.y) < 5;
 
   noStroke();
   for (x = floor(camera.pos.x - wSize/2); x < ceil(camera.pos.x + wSize/2); x++) {
   	for (y = floor(camera.pos.y - hSize/2); y < ceil(camera.pos.y + hSize/2); y++) {
   	  try {
         let b = game[x][y];
-        if (x == round(m.x) && y == round(m.y)) fill(b.col.hue, b.col.sat, 0.5*b.col.bri);
+        if (mouseNearPlayer && (x == round(m.x) && y == round(m.y))) fill(b.col.hue, b.col.sat, 0.5*b.col.bri);
     		else fill(b.col.hue, b.col.sat, b.col.bri);
         rect(x, y, 1.01, 1.01);
       }
@@ -188,7 +189,7 @@ function drawMap() {
   pop();
 }
 
-let bloperties, combineCP;
+let bloperties, combineCP = null;
 let combineState = 0;
 let combineSettings;
 let combineCountdown, combineReset = 60;
@@ -228,16 +229,35 @@ function runCombine() {
 
     //setup menu
     case 2: {
-      //color picker
-      // combineCP = new createColorPicker(color(0, 0, 0));
-      // combineCP.position(width/2, height/2);
-      //
+      if (combineCP == null) {
+        combineCP = [];
+
+        //color picker sliders
+        let addY = (height/10 + 3*txtSize) + (0.425*(height - height/10 + 3*txtSize));
+        for (let i = 0; i < 3; i++) {
+          let w = width/8;
+          let h = w/10;
+          let x = width/2 - w/2;
+          let y = addY + i*height/30;
+          let c = createSlider(0, 100, random(100));
+          c.position(x, y);
+          c.size(w, h);
+          combineCP.push(c);
+        }
+      } else {
+        for (let i = 0; i < combineCP.length; i++) {
+          combineCP[i].show();
+        }
+      }
+
+      print(combineCP);
+
       combineState++;
     }
 
     //menu
     case 3: {
-      let baseY = height/10 + 3*txtSize
+      let baseY = height/10 + 3*txtSize;
       for (let i = 0; i < bloperties.length; i++) {
         let b = bloperties[i];
 
@@ -265,6 +285,11 @@ function runCombine() {
         }
       }
 
+      //color picker
+      let c = color(36*combineCP[0].value()/10, combineCP[1].value(), combineCP[2].value());
+      fill(c);
+      rect(width/2, height, width, 100);
+
       //combine button
       let h = height/10;
       textSize(h/3);
@@ -279,13 +304,21 @@ function runCombine() {
         let data = [
           bloperties,
           {
-            hue: 0,
-            sat: 0,
-            bri: 0
+            hue: hue(c),
+            sat: saturation(c),
+            bri: brightness(c)
           }
         ]
 
+        //remove color picker
+        for (let i = 0; i < combineCP.length; i++) {
+          combineCP[i].hide();
+        }
+
         socket.emit('newBlock', bloperties);
+        combineState = 0;
+        player.gui.mode = 1;
+        gs = GameStates.GAME;
       }
     }
   }

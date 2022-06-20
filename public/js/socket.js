@@ -39,13 +39,12 @@ function usernameIsAvailable(data) {
 }
 
 //request game
-let game;
+let game = null;
 function requestGame() {
   socket.emit('requestGame');
 }
 socket.on('sendGame', function(data) {
   game = data;
-  gs++;
 });
 
 //update players
