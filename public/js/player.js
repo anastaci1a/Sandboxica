@@ -81,7 +81,7 @@ class GUI {
   update(p, m) {
     if (this.mode == 0) {
       let currBlock = null;
-      if (dist(player.pos.x, player.pos.y, m.x, m.y) < 5Y) {
+      if (dist(player.pos.x, player.pos.y, m.x, m.y) < 5) {
         try {
           currBlock = game[round(m.x)][round(m.y)];
         }
