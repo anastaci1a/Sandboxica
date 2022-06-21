@@ -66,8 +66,6 @@ socket.on('heldBlock', function(block) {
 });
 
 socket.on('holdBlock', function(data) {
-  print(data);
-
   if (data.b == -1) {
     gs = GameStates.COMBINE;
   }
