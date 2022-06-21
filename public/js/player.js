@@ -42,8 +42,10 @@ class Player {
     this.vel.mult(this.blockOn(this.pos).properties.friction);
     this.pos.add(this.vel);
 
-    this.pos.x %= game.length;
-    this.pos.y %= game[0].length;
+    if (this.pos.x < 0) this.pos.x = 0;
+    if (this.pos.x > game.length-1) this.pos.x = game.length-1;
+    if (this.pos.y < 0) this.pos.y = 0;
+    if (this.pos.y > game[0].length-1) this.pos.y = game[0].length-1;
 
     if (this.vel.mag() > 0) this.sendPos();
 
