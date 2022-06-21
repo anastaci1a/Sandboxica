@@ -189,7 +189,7 @@ function drawMap() {
   pop();
 }
 
-let bloperties, combineCP = null;
+let bloperties, combineCP = null, combineName = '';
 let combineState = 0;
 let combineSettings;
 let combineCountdown, combineReset = 60;
@@ -239,7 +239,7 @@ function runCombine() {
           let h = w/10;
           let x = width/2 - w/2;
           let y = addY + i*height/30;
-          let c = createSlider(0, 100, random(100));
+          let c = createSlider(0, 100, 100);
           c.position(x, y);
           c.size(w, h);
           combineCP.push(c);
@@ -250,7 +250,17 @@ function runCombine() {
         }
       }
 
-      print(combineCP);
+      //name input
+      let h = height/10;
+      textSize(h/3);
+      let txt = 'Combine!';
+      let w = textWidth(txt);
+      let x = width - 1.5*w - w/2;
+      let y = height - 3.5*h;
+      combineName = createInput();
+      combineName.position(x, y);
+      combineName.size(w, h/3);
+
 
       combineState++;
     }
@@ -288,37 +298,51 @@ function runCombine() {
       //color picker
       let c = color(36*combineCP[0].value()/10, combineCP[1].value(), combineCP[2].value());
       fill(c);
-      rect(width/2, height, width, 100);
+      rect(width/2, height, width, height/7);
 
       //combine button
       let h = height/10;
       textSize(h/3);
       let txt = 'Combine!';
-      let x = width - 1.5*textWidth(txt);
+      let w = textWidth(txt);
+      let x = width - 1.5*w;
       let y = height - 1.5*h;
       let bt = new Button(txt, (frameCount / 1.5) % 360, x, y, h);
       bt.manage();
 
+      //block name
+      x = width - 1.5*w;
+      y = height - 4*h;
+      text('Block Name:', x, y);
+
       //combine
       if (bt.click) {
-        let data = [
-          bloperties,
-          {
-            hue: hue(c),
-            sat: saturation(c),
-            bri: brightness(c)
-          }
-        ]
+        let data = {
+          blocks: player.gui.blocks,
+          block: [
+            combineName.value(),
+            bloperties,
+            {
+              hue: hue(c),
+              sat: saturation(c),
+              bri: brightness(c)
+            }
+          ]
+        }
 
         //remove color picker
         for (let i = 0; i < combineCP.length; i++) {
           combineCP[i].hide();
         }
+        //remove name input
+        combineName.hide();
 
-        socket.emit('newBlock', bloperties);
         combineState = 0;
-        player.gui.mode = 1;
+        player.gui.mode = -1;
         gs = GameStates.GAME;
+
+        //send new block to server
+        socket.emit('newBlock', data);
       }
     }
   }

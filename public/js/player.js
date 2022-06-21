@@ -75,7 +75,7 @@ class GUI {
 
   manage(p, m) {
     this.update(p, m);
-    this.display();
+    this.display(m);
   }
 
   update(p, m) {
@@ -94,16 +94,34 @@ class GUI {
         }
       }
     }
-    if (this.mode == 1) {
 
+    if (this.mode == 1) {
+      let mouseNearPlayer = dist(player.pos.x, player.pos.y, m.x, m.y) < 5;
+
+      //place block
+      if (mouseNearPlayer && mouse.tap) {
+        let block = this.heldBlock;
+        let data = {
+          pos: {
+            x: round(m.x),
+            y: round(m.y)
+          },
+          block
+        };
+
+        game[data.pos.x][data.pos.y] = block;
+        socket.emit('placeBlock', data);
+        this.mode = 0;
+        this.blocks = [];
+      }
     }
   }
 
-  display() {
+  display(m) {
     let h = height/15;
     textSize(h/3);
 
-
+    //block combiner mode
     if (this.mode == 0) {
       let bt1, bt2;
 
@@ -127,14 +145,25 @@ class GUI {
         let btCombine = new Button('Combine Blocks', (frameCount / 1.5) % 360, (bt1.pos.x + bt2.pos.x)/2, height - 3*h, h);
         btCombine.manage();
         if (btCombine.click) {
-          gs = GameStates.COMBINE;
+          this.mode = -1;
+          socket.emit('blockCombo', this.blocks);
         }
       }
     }
 
+    //placing mode
     if (this.mode == 1) {
-
+      //block preview
+      bSize = height/20;
+      let c = color(this.heldBlock.col.hue, this.heldBlock.col.sat, this.heldBlock.col.bri);
+      fill(c);
+      rect(mouseX, mouseY, bSize, bSize);
     }
+  }
+
+  receiveBlock(block) {
+    this.heldBlock = block;
+    this.mode = 1;
   }
 }
 

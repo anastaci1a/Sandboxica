@@ -26,6 +26,9 @@ let blockIndex = JSON.parse(rawBlockIndex);
 //block properties
 let rawBloperties = fs.readFileSync('bloperties.json');
 let bloperties = JSON.parse(rawBloperties)
+//block combinations
+let rawBlombos = fs.readFileSync('blombos.json');
+let blombos = JSON.parse(rawBlombos);
 
 //server started message
 addToConsole('Server started...');
@@ -132,6 +135,84 @@ io.sockets.on('connection', function(socket) {
   socket.on('requestBloperies', function(pos) {
     socket.emit('bloperties', bloperties);
   });
+
+  //add new block
+  let heldBlock = -1;
+  socket.on('newBlock', function(data) {
+    let combo = [];
+    for (let i = 0; i < data.blocks.length; i++) {
+      combo.push(getBlockIndex(data.blocks[i]));
+    }
+    combo.sort();
+
+    let block = data.block;
+    let newBlock = {
+      name: block[0],
+      properties: {
+        friction: block[1][0].value,
+        freeze: block[1][1].value,
+        burn: block[1][2].value,
+        alive: block[1][3].value
+      },
+      col: {
+        hue: block[2].hue,
+        sat: block[2].sat,
+        bri: block[2].bri,
+        hran: 0,
+        sran: 0,
+        bran: 0
+      }
+    }
+
+    blockIndex.push(newBlock);
+    heldBlock = blockIndex.length-1;
+
+    let blombo = {
+      combo: combo,
+      block: blockIndex.length-1
+    }
+
+    blombos.push(blombo);
+
+    socket.emit('heldBlock', blockIndex[heldBlock]);
+  });
+
+  socket.on('placeBlock', function(data) {
+    if (getBlockIndex(data.block) != -1) {
+      game[data.pos.x][data.pos.y] = data.block;
+      updateGame();
+    }
+  });
+
+  socket.on('blockCombo', function(data) {
+    let combo = [];
+    for (let i = 0; i < data.length; i++) {
+      let b = data[i];
+      combo.push(getBlockIndex(b));
+    }
+    combo.sort();
+
+    let b = -1;
+    for (let i = 0; i < blombos.length; i++) {
+      if (arraysEqual(blombos[i].combo, combo)) {
+        b = blombos[i].block;
+        break;
+      }
+    }
+
+    let block = {};
+    try {
+      block = blockIndex[b];
+    }
+    catch(e) {}
+
+    let r = {
+      b,
+      block
+    }
+
+    socket.emit('holdBlock', r);
+  });
 });
 
 //emitting to clients
@@ -181,6 +262,16 @@ function getPlayerIndex(id) {
     }
   }
   return null;
+}
+function getBlockIndex(b) {
+  let r = -1;
+  for (let i = 0; i < blockIndex.length; i++) {
+    if (b.name == blockIndex[i].name) {
+      r = i;
+      break;
+    }
+  }
+  return r;
 }
 
 function getTime(mode) {
@@ -331,4 +422,18 @@ function checkFileExists(filepath){
     flag = false;
   }
   return flag;
+}
+
+function arraysEqual(a, b) {
+  if (a === b) return true;
+  if (a == null || b == null) return false;
+  if (a.length !== b.length) return false;
+
+  a.sort();
+  b.sort();
+
+  for (var i = 0; i < a.length; ++i) {
+    if (a[i] !== b[i]) return false;
+  }
+  return true;
 }

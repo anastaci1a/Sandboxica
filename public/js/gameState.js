@@ -139,10 +139,14 @@ function gameState() {
       bt.manage();
 
       if (bt.released) { gs = GameStates.GAME }
+
+      break;
     }
 
     case GameStates.COMBINE: {
       runCombine();
+
+      break;
     }
   }
 }

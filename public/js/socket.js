@@ -59,3 +59,20 @@ socket.on('bloperties', function(data) {
   bloperties = data;
   combineState = 2;
 });
+
+//get held block
+socket.on('heldBlock', function(block) {
+  player.gui.receiveBlock(block);
+});
+
+socket.on('holdBlock', function(data) {
+  print(data);
+
+  if (data.b == -1) {
+    gs = GameStates.COMBINE;
+  }
+  else {
+    player.gui.heldBlock = data.block;
+    player.gui.mode = 1;
+  }
+});

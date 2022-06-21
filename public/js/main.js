@@ -1,4 +1,10 @@
-p5.disableFriendlyErrors = true; // better performance
+//better performance
+p5.disableFriendlyErrors = true;
+
+//disable right click menu
+document.addEventListener("contextmenu", function (e) {
+  e.preventDefault();
+}, false);
 
 //***
 function setup() {
